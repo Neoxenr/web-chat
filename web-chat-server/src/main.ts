@@ -7,6 +7,8 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new WsAdapter(app));
 
+  app.enableCors();
+
   await app.listen(3000);
 }
 bootstrap();
