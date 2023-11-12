@@ -23,17 +23,13 @@ export class MessagesGateway
 
   @WebSocketServer() io: Server;
 
-  afterInit() {
-    this.logger.log('Initialized');
-  }
-
   handleConnection(client: any) {
     this.clients.push(client);
+
     this.logger.log(`Client id: ${client.id} connected`);
   }
 
   handleDisconnect(client: any) {
-    // отключить всех
     this.logger.log(`Client id: ${client.id} disconnected`);
   }
 
@@ -41,11 +37,10 @@ export class MessagesGateway
   handleMessage(
     @MessageBody() data: string,
   ): Observable<WsResponse<any>> | any {
-    // this.logger.log(`Message received from client id: ${client.id}`);
     this.logger.debug(`Payload: ${data}`);
 
-    for (let i = 0; i < this.clients.length; i++) {
-      this.clients[i].send(JSON.stringify({ event: 'message', data }));
-    }
+    this.clients.forEach((client) => {
+      client.send(JSON.stringify({ event: 'message', data }));
+    });
   }
 }
